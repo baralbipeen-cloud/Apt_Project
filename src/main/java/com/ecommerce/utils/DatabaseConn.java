@@ -1,41 +1,17 @@
 package com.ecommerce.utils;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-/**
- * Servlet implementation class DatabaseConn
- */
-@WebServlet("/DatabaseConn")
-public class DatabaseConn extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public DatabaseConn() {
-        super();
-        // TODO Auto-generated constructor stub
+public class DatabaseConn {
+    private static final String DATABASE_NAME = "auto_parts_ecommerce";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/" + DATABASE_NAME;
+
+    public static Connection getConnection() throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }

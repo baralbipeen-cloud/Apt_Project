@@ -1,41 +1,35 @@
 package com.ecommerce.filter;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
+import com.ecommerce.models.UserModel;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 
-/**
- * Servlet implementation class BanFilter
- */
-@WebServlet("/BanFilter")
-public class BanFilter extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public BanFilter() {
-        super();
-        // TODO Auto-generated constructor stub
+@WebFilter(urlPatterns = {"/*"})
+public class BanFilter implements Filter {
+
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) 
+            throws IOException, ServletException {
+        
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
+        HttpSession session = request.getSession(false);
+        
+        if (session != null && session.getAttribute("email") != null) {
+            String activeStatus = (String) session.getAttribute("active");
+            if ("banned".equals(activeStatus)) {
+                session.invalidate();
+                request.setAttribute("error", "Your account has been banned. Please contact the administrator.");
+                request.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(request, response);
+                return;
+            }
+        }
+        
+        chain.doFilter(req, res);
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }
